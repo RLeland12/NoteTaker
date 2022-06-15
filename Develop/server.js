@@ -1,22 +1,17 @@
-const fs = require('fs');
 const express = require('express');
-const path = require('path');
+const apiRoutes = require('./routes/apiRoutes');
+const htmlRoutes = require('./routes/htmlRoutes');
 
+// Initialize the app and create a port
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
+// Set up body parsing, static, and route middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use('/api', apiRoutes);
+app.use('/', htmlRoutes);
 
-app.get('/', (req, res) => res.send('Navigate to /send or /routes'));
-
-app.get('/send', (req, res) =>
-  res.sendFile(path.join(__dirname, 'public/send.html'))
-);
-
-app.get('/paths', (req, res) =>
-  res.sendFile(path.join(__dirname, 'public/paths.html'))
-);
-
-app.listen(PORT, () =>
-  console.log(` app listening at http://localhost:${PORT}`)
-);
+// Start the server on the port
+app.listen(PORT, () => console.log(`Listening on PORT: ${PORT}`));
